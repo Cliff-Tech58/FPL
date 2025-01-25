@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Manage Points</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .action-btns button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel - Manage Points</h1>
+
+    <div class="form-container">
+        <label for="adminId">Unique ID:</label>
+        <input type="text" id="adminId" placeholder="Enter ID">
+
+        <label for="adminName">Name:</label>
+        <input type="text" id="adminName" placeholder="Enter Name">
+
+        <label for="adminPoints">Points:</label>
+        <input type="text" id="adminPoints" placeholder="Enter Points">
+        
+        <button onclick="addUser()">Add User</button>
+        <button onclick="updateUser()" id="updateBtn" style="display: none;">Update User</button>
+    </div>
+
+    <h2>Current Users and Points</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Points</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="adminResults">
+        </tbody>
+    </table>
+
+    <script>
+        let userData = JSON.parse(localStorage.getItem('userData')) || {};
+
+        function addUser() {
+            const id = document.getElementById("adminId").value;
+            const name = document.getElementById("adminName").value;
+            const points = document.getElementById("adminPoints").value;
+
+            if (id && name && points) {
+                if (userData[id]) {
+                    alert("This ID already exists. Please use a unique ID.");
+                } else {
+                    userData[id] = { name: name, points: points };
+                    alert("User added successfully!");
+                    resetForm();
+                    saveUserData();
+                    displayUserData();
+                }
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function displayUserData() {
+            const resultDiv = document.getElementById("adminResults");
+            resultDiv.innerHTML = "";
+            for (const id in userData) {
+                resultDiv.innerHTML += `<tr>
+                    <td>${id}</td>
+                    <td>${userData[id].name}</td>
+                    <td>${userData[id].points}</td>
+                    <td class="action-btns">
+                        <button onclick="editUser('${id}')">Edit</button>
+                        <button onclick="deleteUser('${id}')">Delete</button>
+                    </td>
+                </tr>`;
+            }
+        }
+
+        function resetForm() {
+            document.getElementById("adminId").value = "";
+            document.getElementById("adminName").value = "";
+            document.getElementById("adminPoints").value = "";
+            document.getElementById("updateBtn").style.display = "none";
+        }
+
+        function deleteUser(id) {
+            if (confirm(`Are you sure you want to delete the user with ID: ${id}?`)) {
+                delete userData[id];
+                saveUserData();
+                displayUserData();
+            }
+        }
+
+        function editUser(id) {
+            document.getElementById("adminId").value = id;
+            document.getElementById("adminName").value = userData[id].name;
+            document.getElementById("adminPoints").value = userData[id].points;
+            document.getElementById("updateBtn").style.display = "inline";
+        }
+
+        function updateUser() {
+            const id = document.getElementById("adminId").value;
+            const name = document.getElementById("adminName").value;
+            const points = document.getElementById("adminPoints").value;
+
+            if (id && name && points) {
+                userData[id] = { name: name, points: points };
+                alert("User updated successfully!");
+                resetForm();
+                saveUserData();
+                displayUserData();
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function saveUserData() {
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+
+        window.onload = function() {
+            displayUserData();
+        };
+    </script>
+</body>
+</html>

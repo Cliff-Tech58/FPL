@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View User Points</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>View Points</h1>
+
+    <div class="form-container">
+        <label for="userId">Enter Unique ID:</label>
+        <input type="text" id="userId" placeholder="Enter ID">
+        <button onclick="viewUser()">View Points</button>
+    </div>
+
+    <div id="result" style="display: none;">
+        <h2>User Details</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Points</th>
+            </tr>
+            <tr>
+                <td id="resultId"></td>
+                <td id="resultName"></td>
+                <td id="resultPoints"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="noData" style="display: none; color: red;">
+        <p>No data found for the entered ID.</p>
+    </div>
+
+    <script>
+        function viewUser() {
+            const userId = document.getElementById("userId").value;
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+
+            if (userData[userId]) {
+                document.getElementById("resultId").innerText = userId;
+                document.getElementById("resultName").innerText = userData[userId].name;
+                document.getElementById("resultPoints").innerText = userData[userId].points;
+                document.getElementById("result").style.display = "block";
+                document.getElementById("noData").style.display = "none";
+            } else {
+                document.getElementById("result").style.display = "none";
+                document.getElementById("noData").style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
+
+</html>
